@@ -15,6 +15,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Auth::routes();
+//Resource Groups
+Route::resource('/employees', 'employeesController');
+Route::resource('/companies', 'companiesController');
 
+//Auth
+Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
