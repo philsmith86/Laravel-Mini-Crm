@@ -3,9 +3,14 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Company;
 
 class CompaniesController extends Controller
 {
+    public function __construct(){
+        $this->middleware('auth');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -13,7 +18,8 @@ class CompaniesController extends Controller
      */
     public function index()
     {
-        //
+        $companies = Company::all();
+        return View('companies.index', compact('companies'));
     }
 
     /**
@@ -23,7 +29,7 @@ class CompaniesController extends Controller
      */
     public function create()
     {
-        //
+        return View('companies.create');
     }
 
     /**
@@ -34,7 +40,14 @@ class CompaniesController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $attributes = request()->validate([
+            'name' => ['required'],
+            'email' => ['required'],
+            'web' => ['required']
+        ]);        
+        Company::create($attributes);
+
+        return redirect('/companies');
     }
 
     /**
@@ -54,9 +67,8 @@ class CompaniesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
-    {
-        //
+    public function edit(Company $company){
+        return View('companies.edit', compact('company'));
     }
 
     /**
@@ -68,7 +80,13 @@ class CompaniesController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $company = Company::find($id);
+        $company->name = request('name');
+        $company->email = request('email');
+        $company->web = request('web');
+        $company->save();
+        
+        return redirect('/companies');
     }
 
     /**
@@ -77,8 +95,8 @@ class CompaniesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
-    {
-        //
+    public function destroy(Company $company){
+        $company->delete();
+        return redirect('/companies');    
     }
 }
